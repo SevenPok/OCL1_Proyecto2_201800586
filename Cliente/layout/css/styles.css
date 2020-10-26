@@ -1,0 +1,281 @@
+body {
+    background-color: #e7e7de;
+    font-family: 'Spartan', sans-serif;
+}
+
+nav {
+    background-color: #333;
+    overflow: hidden;
+}
+
+
+/* Style the links inside the navigation bar */
+
+nav a {
+    float: left;
+    display: block;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+
+/* Add an active class to highlight the current page */
+
+.active {
+    background-color: #4CAF50;
+    color: white;
+}
+
+
+/* Hide the link that should open and close the topnav on small screens */
+
+nav .icon {
+    display: none;
+}
+
+
+/* Dropdown container - needed to position the dropdown content */
+
+.dropdown {
+    float: left;
+    overflow: hidden;
+}
+
+
+/* Style the dropdown button to fit inside the topnav */
+
+.dropdown .dropbtn {
+    font-size: 17px;
+    border: none;
+    outline: none;
+    color: white;
+    padding: 14px 16px;
+    background-color: inherit;
+    font-family: inherit;
+    margin: 0;
+}
+
+
+/* Style the dropdown content (hidden by default) */
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+
+/* Style the links inside the dropdown */
+
+.dropdown-content a {
+    float: none;
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+
+/* Add a dark background on topnav links and the dropdown button on hover */
+
+nav a:hover,
+.dropdown:hover .dropbtn {
+    background-color: #555;
+    color: white;
+}
+
+
+/* Add a grey background to dropdown links on hover */
+
+.dropdown-content a:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+
+/* Show the dropdown menu when the user moves the mouse over the dropdown button */
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+
+/* When the screen is less than 600 pixels wide, hide all links, except for the first one ("Home"). Show the link that contains should open and close the topnav (.icon) */
+
+@media screen and (max-width: 600px) {
+    nav a:not(:first-child),
+    .dropdown .dropbtn {
+        display: none;
+    }
+    nav a.icon {
+        float: right;
+        display: block;
+    }
+}
+
+
+/* The "responsive" class is added to the topnav with JavaScript when the user clicks on the icon. This class makes the topnav look good on small screens (display the links vertically instead of horizontally) */
+
+@media screen and (max-width: 600px) {
+    nav .responsive {
+        position: relative;
+    }
+    nav .responsive a.icon {
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+    nav .responsive a {
+        float: none;
+        display: block;
+        text-align: left;
+    }
+    nav .responsive .dropdown {
+        float: none;
+    }
+    nav .responsive .dropdown-content {
+        position: relative;
+    }
+    nav .responsive .dropdown .dropbtn {
+        display: block;
+        width: 100%;
+        text-align: left;
+    }
+}
+
+.mainbox {
+    width: 70%;
+    margin: 0 auto;
+    margin-top: 30px;
+    font-family: Arial;
+}
+
+.mainbox h1 {
+    background-color: #808080;
+    color: white;
+    font-size: 14px;
+    padding: 10px;
+    text-align: center;
+    border-radius: 5px;
+}
+
+.mainbox p {
+    text-align: center;
+}
+
+footer {
+    position: fixed;
+    height: 40px;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: #333;
+    color: white;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+.ta {
+    resize: none;
+}
+
+.contenedor {
+    width: 1080px;
+    margin: auto;
+    background: #333;
+    color: rgb(0, 112, 163);
+    padding: 20px 15px 50px 50px;
+    border-radius: 10px;
+    box-shadow: 0 10px 10px 0px rgba(0, 0, 0, 0.8);
+}
+
+.contenedor .titulo {
+    font-size: 3.5ex;
+    font-weight: bold;
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+
+#pestanas {
+    float: top;
+    font-size: 3ex;
+    font-weight: bold;
+}
+
+#pestanas ul {
+    margin-left: -40px;
+}
+
+#pestanas li {
+    list-style-type: none;
+    float: left;
+    text-align: center;
+    margin: 0px 2px -2px -0px;
+    background: #22556e;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border: 2px solid rgb(0, 112, 163);
+    border-bottom: dimgray;
+    padding: 0px 20px 0px 20px;
+}
+
+#pestanas a:link {
+    text-decoration: none;
+    color: #ffffff;
+}
+
+#contenidopestanas {
+    clear: both;
+    background: dimgray;
+    padding: 20px 0px 20px 20px;
+    border-radius: 5px;
+    border-top-left-radius: 0px;
+    border: 2px solid rgb(0, 112, 163);
+    width: 1025px;
+}
+
+#pestanascon {
+    float: top;
+    font-size: 3ex;
+    font-weight: bold;
+}
+
+#pestanascon ul {
+    margin-left: -40px;
+}
+
+#pestanascon li {
+    list-style-type: none;
+    float: left;
+    text-align: center;
+    margin: 0px 2px -2px -0px;
+    background: #22556e;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border: 2px solid rgb(0, 112, 163);
+    border-bottom: dimgray;
+    padding: 0px 20px 0px 20px;
+}
+
+#pestanascon a:link {
+    text-decoration: none;
+    color: #ffffff;
+}
+
+#contenidopestanascon {
+    clear: both;
+    background: dimgray;
+    padding: 20px 0px 20px 20px;
+    border-radius: 5px;
+    border-top-left-radius: 0px;
+    border: 2px solid rgb(0, 112, 163);
+    width: 1025px;
+}
