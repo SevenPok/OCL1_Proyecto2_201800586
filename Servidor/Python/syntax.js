@@ -1,8 +1,5 @@
 var token = require('./token');
-var lexer = require('./lexer');
 var terminales = require('./terminal');
-let fs = require('fs');
-
 
 var syntax = (function(tk) {
     var i = 0;
@@ -16,12 +13,12 @@ var syntax = (function(tk) {
     function match(terminal) {
 
         if (preanalisis.token != terminal) {
-            console.log('Error sintactico con token: ' + preanalisis.token + ' se esperaba: ' + terminal);
+            //console.log('Error sintactico con token: ' + preanalisis.token + ' se esperaba: ' + terminal);
             errores.push({ 'tipo': 'sintactico', 'lexema': preanalisis.lexema, 'fila': preanalisis.fila, 'columna': preanalisis.columna })
         }
 
         if (preanalisis.token != token.getTipo.EOF) {
-            console.log(preanalisis.token);
+            //console.log(preanalisis.token);
             i++;
             preanalisis = tk[i];
         }
@@ -209,8 +206,13 @@ var syntax = (function(tk) {
 
     function asignacion() {
         match(token.getTipo.identificador);
-        match(token.getTipo.asignacion);
-        expresion();
+        if (preanalisis.token == token.getTipo.asignacion) {
+            match(token.getTipo.asignacion);
+            expresion();
+        } else {
+            //console.log('Error sintactico con token: ' + preanalisis.token + ' se esperaba: =');
+            errores.push({ 'tipo': 'sintactico', 'lexema': preanalisis.lexema, 'fila': preanalisis.fila, 'columna': preanalisis.columna })
+        }
     }
 
     function declaracion() {
@@ -303,6 +305,8 @@ var syntax = (function(tk) {
             PRINT();
             panico();
             match(token.getTipo.punto_coma);
+        } else if (preanalisis.token != token.getTipo.llave_derecha) {
+            match('SENTENCIA');
         }
     }
 
@@ -376,7 +380,7 @@ var syntax = (function(tk) {
 
     function sentencias() {
         sentencia();
-        if (terminales.sentencia(preanalisis.token)) {
+        if (preanalisis.token != token.getTipo.EOF && preanalisis.token != token.getTipo.llave_derecha) {
             sentencias();
         }
     }
@@ -397,20 +401,24 @@ var syntax = (function(tk) {
 
     function instrucciones2() {
         instruccion2();
-        if (preanalisis.token == token.getTipo.public) {
+        if (preanalisis.token != token.getTipo.EOF && preanalisis.token != token.getTipo.llave_derecha) {
             instrucciones2();
         }
     }
 
     function instruccion2() {
-        metodo2();
-        panico();
-        match(token.getTipo.punto_coma);
+        if (preanalisis.token == token.getTipo.public) {
+            metodo2();
+            panico();
+            match(token.getTipo.punto_coma);
+        } else {
+            match('INSTRUCCION');
+        }
     }
 
     function instrucciones() {
         instruccion();
-        if (terminales.instruccion(preanalisis.token)) {
+        if (preanalisis.token != token.getTipo.EOF && preanalisis.token != token.getTipo.llave_derecha) {
             instrucciones();
         }
     }
@@ -431,6 +439,8 @@ var syntax = (function(tk) {
             } else {
                 metodo();
             }
+        } else if (preanalisis.token != token.getTipo.llave_derecha) {
+            match('INSTRUCCION');
         }
     }
 
@@ -526,17 +536,21 @@ var syntax = (function(tk) {
     }
 
     function head() {
-        match(token.getTipo.public);
-        if (preanalisis.token == token.getTipo.class) {
-            clase();
-        } else if (preanalisis.token == token.getTipo.interface) {
-            interface();
+        if (preanalisis.token == token.getTipo.public) {
+            match(token.getTipo.public);
+            if (preanalisis.token == token.getTipo.class) {
+                clase();
+            } else if (preanalisis.token == token.getTipo.interface) {
+                interface();
+            }
+        } else {
+            match('CLASE');
         }
     }
 
     function header() {
         head();
-        if (preanalisis.token == token.getTipo.public) {
+        if (preanalisis.token != token.getTipo.EOF) {
             header();
         }
     }
@@ -546,7 +560,7 @@ var syntax = (function(tk) {
             if (preanalisis.token == token.getTipo.punto_coma || preanalisis.token == token.getTipo.llave_derecha) {
                 break;
             }
-            console.log('Me estoy recuperando con el token: ' + preanalisis.token);
+            //console.log('Me estoy recuperando con el token: ' + preanalisis.token);
             errores.push({ 'tipo': 'sintactico', 'lexema': preanalisis.lexema, 'fila': preanalisis.fila, 'columna': preanalisis.columna })
             i++;
             preanalisis = tk[i];
@@ -554,9 +568,5 @@ var syntax = (function(tk) {
     }
 });
 
-var arrayTokens = lexer.tokens(fs.readFileSync('test.java', 'utf-8'));
-//console.log(arrayTokens[1]);
-var aux = [];
-arrayTokens[0].forEach((valor) => valor.token != token.getTipo.comentario ? aux.push(valor) : null);
 
-console.log(syntax(aux));
+exports.syntax = syntax;

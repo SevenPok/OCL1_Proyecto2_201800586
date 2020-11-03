@@ -85,7 +85,6 @@ const instruccion = function(terminal) {
     }
 }
 
-
 module.exports = {
     primitivo,
     tipo,

@@ -249,6 +249,6 @@ var arrayToken = (function(cadena) {
 });
 
 
-console.log(arrayToken("hola mundo soy yo de nuev@ /* asdasd"));
+//console.log(arrayToken("hola mundo soy yo de nuev@ /* asdasd"));
 
 exports.tokens = arrayToken;

@@ -17,8 +17,8 @@
 
 %%
 
-"//".*    { tokens.push('COMENTARIO', yytext, yylloc.first_line, yylloc.first_column); };
-[/][*][^*]*[*]+([^/*][^*]*[*]+)*[/] { tokens.push('COMENTARIO', yytext, yylloc.first_line, yylloc.first_column); };
+"//".*    { tokens.push(addToken('COMENTARIO', yytext, yylloc.first_line, yylloc.first_column)); };
+[/][*][^*]*[*]+([^/*][^*]*[*]+)*[/] { tokens.push(addToken('COMENTARIO', yytext, yylloc.first_line, yylloc.first_column)); };
 \s+ ;
 
 "{"                         { tokens.push(addToken('KEY_LEFT', yytext, yylloc.first_line, yylloc.first_column)); return 'KEY_LEFT'; }
@@ -108,8 +108,8 @@
 %%
 
 ini
-    :   headers EOF    { return [$1,tokens,errores]; }
-    |   EOF            { return [[],tokens,errores]; }
+    :   headers EOF    { var aux = tokens; var aux2 = errores; tokens = []; errores = []; return [$1,aux,aux2]; }
+    |   EOF            { var aux = tokens; var aux2 = errores; tokens = []; errores = []; return [[],aux,aux2]; }
 ;
 
 headers
@@ -126,10 +126,12 @@ head
 
 bloque_instruccion
     :   KEY_LEFT instrucciones KEY_RIGHT { $$ = {'izquierda':$1, 'INSTRUCCIONES': $2, 'derecha':$3}; }
+    |   KEY_LEFT KEY_RIGHT    { $$ = {'izquierda': $1, 'derecha': $2}; }
 ;
 
 bloque_instruccion2
     :   KEY_LEFT instrucciones2 KEY_RIGHT { $$ = {'izquierda':$1, 'INSTRUCCIONES': $2, 'derecha':$3}; }
+    |   KEY_LEFT KEY_RIGHT    { $$ = {'izquierda': $1, 'derecha': $2}; }
 ;
 
 instrucciones
@@ -187,6 +189,7 @@ interface
 
 bloque_sentencia
     :   KEY_LEFT sentencias KEY_RIGHT    { $$ = {'izquierda': $1, 'SENTENCIAS': $2, 'derecha': $3}; }
+    |   KEY_LEFT KEY_RIGHT    { $$ = {'izquierda': $1, 'derecha': $2}; }
 ;
 
 declaracion
@@ -222,7 +225,7 @@ do
 ;
 
 for
-    :   FOR PAR_LEFT declaracion PUNTO_COMA expresion PUNTO_COMA expresion PAR_RIGHT bloque_sentencia    { $$ = {'for': $1, 'izquierda': $2, 'DECLARACION': $3, 'EXPRESION 1': $5, 'EXPRESION 2': $7, 'BLOQUE SENTENCIA': $9}; }
+    :   FOR PAR_LEFT declaracion PUNTO_COMA expresion PUNTO_COMA expresion PAR_RIGHT bloque_sentencia    { $$ = {'for': $1, 'izquierda': $2, 'DECLARACION': $3, 'EXPRESION 1': $5, 'EXPRESION 2': $7, 'derecha': $8,'BLOQUE SENTENCIA': $9}; }
 ;
 
 incremento 
@@ -259,7 +262,7 @@ call_metodo
 
 valores 
     :   valores COMA expresion  { $1.push({'coma':$2, 'EXPRESION':$3}); $$ = $1; }
-    |   expresion               { $$ = [$1]; }
+    |   expresion               { $$ = [{'EXPRESION':$1}]; }
 ;
 
 parametros

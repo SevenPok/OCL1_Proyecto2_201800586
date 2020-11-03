@@ -201,6 +201,311 @@ function DescargarArchivo() {
 }
 
 function Analizar() {
-    var curso = document.getElementById(get_vent()).value;
-    console.log(curso);
+    errorJava();
+    errorPython();
+}
+
+function errorJava() {
+    var contenido = document.getElementById(get_vent()).value;
+    axios({
+        method: 'POST',
+        url: 'http://localhost:3000/js/error',
+        data: { 'contenido': contenido }
+    }).then(res => {
+        //console.log(res.data.errores);
+        var java = document.getElementById('java').value + "\n\n";
+        for (let index = 0; index < res.data.errores.length; index++) {
+            java += 'Tipo: ' + res.data.errores[index].tipo + ', Lexema: ' + res.data.errores[index].lexema + ', Fila: ' + res.data.errores[index].fila + ', Columna: ' + res.data.errores[index].columna + "\n";
+        }
+        java += "\n------------------------------------------------------------";
+        document.getElementById('java').value = java;
+    }).catch(err => console.log(err))
+
+}
+
+function errorPython() {
+    var contenido = document.getElementById(get_vent()).value;
+    axios({
+        method: 'POST',
+        url: 'http://localhost:3000/python/error',
+        data: { 'contenido': contenido }
+    }).then(res => {
+        //console.log(res.data.errores);
+        var java = document.getElementById('python').value + "\n\n";
+        for (let index = 0; index < res.data.errores.length; index++) {
+            java += 'Tipo: ' + res.data.errores[index].tipo + ', Lexema: ' + res.data.errores[index].lexema + ', Fila: ' + res.data.errores[index].fila + ', Columna: ' + res.data.errores[index].columna + "\n";
+        }
+        java += "\n------------------------------------------------------------";
+        document.getElementById('python').value = java;
+    }).catch(err => console.log(err))
+
+}
+
+function generarArbol() {
+    arbolJava();
+}
+
+
+
+function arbolJava() {
+    var contenido = document.getElementById(get_vent()).value;
+    axios({
+        method: 'POST',
+        url: 'http://localhost:3000/js/arbol',
+        data: { 'contenido': contenido }
+    }).then(res => {
+        var dot = res.data.dot;
+        document.getElementById("graph").innerHTML = "";
+        d3.select("#graph")
+            .graphviz()
+            .dot(dot)
+            .render();
+
+    }).catch(err => console.log(err))
+}
+
+function descargarJava() {
+    var contenido = document.getElementById(get_vent()).value;
+    axios({
+        method: 'POST',
+        url: 'http://localhost:3000/contenido',
+        data: { 'contenido': contenido }
+    }).then(res => {
+        var doc = new jsPDF();
+        var texto = String(res.data.traduccion).split('\n');
+        doc.setFontSize(22);
+        doc.text(20, 10, 'Traduccion JavaScript');
+        pageHeight = doc.internal.pageSize.height;
+        doc.setFontSize(14);
+        var y = 15;
+        for (let index = 0; index < texto.length; index++) {
+            const element = texto[index];
+            if (y >= pageHeight - 10) {
+                doc.addPage();
+                y = 10; // Restart height position 
+            }
+            doc.text(20, y, element);
+            y += 7;
+        }
+        doc.addPage();
+        doc.setFontSize(22);
+        doc.text(20, 10, 'Tokens JavaScript');
+        let header = ["No.", "Token", "Lexema", "Fila", "Columna"];
+        let headerConfig = header.map(key => ({
+            'name': key,
+            'prompt': key,
+            'width': 50,
+            'align': 'center',
+            'padding': 0
+        }));
+        var data = [];
+        for (let index = 0; index < res.data.Java.tokens.length; index++) {
+            const element = res.data.Java.tokens[index];
+            data.push({ 'No.': (index + 1), 'Token': element.token, 'Lexema': element.lexema, 'Fila': element.fila, 'Columna': element.columna })
+        }
+        doc.table(10, 20, data, headerConfig);
+
+        doc.addPage();
+        doc.setFontSize(22);
+        doc.text(20, 10, 'Errores JavaScript');
+        header = ["No.", "Tipo", "Lexema", "Fila", "Columna"];
+        let headerConfig2 = header.map(key => ({
+            'name': key,
+            'prompt': key,
+            'width': 50,
+            'align': 'center',
+            'padding': 0
+        }));
+
+        var data2 = [];
+        for (let index = 0; index < res.data.Java.errores.length; index++) {
+            const element = res.data.Java.errores[index];
+            data2.push({ 'No.': (index + 1), 'Tipo': element.tipo, 'Lexema': element.lexema, 'Fila': element.fila, 'Columna': element.columna })
+        }
+
+        doc.table(10, 20, data2, headerConfig2);
+
+        doc.save('Reporte.pdf');
+    }).catch(err => console.log(err))
+}
+
+function descargarAmbos() {
+    var contenido = document.getElementById(get_vent()).value;
+    axios({
+        method: 'POST',
+        url: 'http://localhost:3000/contenido',
+        data: { 'contenido': contenido }
+    }).then(res => {
+        var doc = new jsPDF();
+        var texto = String(res.data.traduccion).split('\n');
+        doc.setFontSize(22);
+        doc.text(20, 10, 'Traduccion JavaScript');
+        pageHeight = doc.internal.pageSize.height;
+        doc.setFontSize(14);
+        var y = 15;
+        for (let index = 0; index < texto.length; index++) {
+            const element = texto[index];
+            if (y >= pageHeight - 10) {
+                doc.addPage();
+                y = 10;
+            }
+            doc.text(20, y, element);
+            y += 7;
+        }
+        doc.addPage();
+        doc.setFontSize(22);
+        doc.text(20, 10, 'Tokens JavaScript');
+        let header = ["No.", "Token", "Lexema", "Fila", "Columna"];
+        let headerConfig = header.map(key => ({
+            'name': key,
+            'prompt': key,
+            'width': 50,
+            'align': 'center',
+            'padding': 0
+        }));
+        var data = [];
+        for (let index = 0; index < res.data.Java.tokens.length; index++) {
+            const element = res.data.Java.tokens[index];
+            data.push({ 'No.': (index + 1), 'Token': element.token, 'Lexema': element.lexema, 'Fila': element.fila, 'Columna': element.columna })
+        }
+        doc.table(10, 20, data, headerConfig);
+        doc.addPage();
+        doc.setFontSize(22);
+        doc.text(20, 10, 'Errores JavaScript');
+        header = ["No.", "Tipo", "Lexema", "Fila", "Columna"];
+        let headerConfig2 = header.map(key => ({
+            'name': key,
+            'prompt': key,
+            'width': 50,
+            'align': 'center',
+            'padding': 0
+        }));
+        var data2 = [];
+        for (let index = 0; index < res.data.Java.errores.length; index++) {
+            const element = res.data.Java.errores[index];
+            data2.push({ 'No.': (index + 1), 'Tipo': element.tipo, 'Lexema': element.lexema, 'Fila': element.fila, 'Columna': element.columna })
+        }
+        doc.table(10, 20, data2, headerConfig2);
+        doc.addPage();
+
+
+        texto = String(res.data.tPython).split('\n');
+        //console.log(res.data.tPython);
+        doc.setFontSize(22);
+        doc.text(20, 10, 'Traduccion Python');
+        pageHeight = doc.internal.pageSize.height;
+        doc.setFontSize(14);
+        y = 15;
+        for (let index = 0; index < texto.length; index++) {
+            const element = texto[index];
+            if (y >= pageHeight - 10) {
+                doc.addPage();
+                y = 10;
+            }
+            doc.text(20, y, element);
+            y += 7;
+        }
+        doc.addPage();
+        doc.setFontSize(22);
+        doc.text(20, 10, 'Tokens Python');
+        header = ["No.", "Token", "Lexema", "Fila", "Columna"];
+        headerConfig = header.map(key => ({
+            'name': key,
+            'prompt': key,
+            'width': 50,
+            'align': 'center',
+            'padding': 0
+        }));
+        data = [];
+        for (let index = 0; index < res.data.Python.tokens.length; index++) {
+            const element = res.data.Python.tokens[index];
+            data.push({ 'No.': (index + 1), 'Token': element.token, 'Lexema': element.lexema, 'Fila': element.fila, 'Columna': element.columna })
+        }
+        doc.table(10, 20, data, headerConfig);
+
+        doc.addPage();
+        doc.setFontSize(22);
+        doc.text(20, 10, 'Errores Python');
+        header = ["No.", "Tipo", "Lexema", "Fila", "Columna"];
+        headerConfig2 = header.map(key => ({
+            'name': key,
+            'prompt': key,
+            'width': 50,
+            'align': 'center',
+            'padding': 0
+        }));
+        data2 = [];
+        for (let index = 0; index < res.data.Python.errores.length; index++) {
+            const element = res.data.Python.errores[index];
+            data2.push({ 'No.': (index + 1), 'Tipo': element.tipo, 'Lexema': element.lexema, 'Fila': element.fila, 'Columna': element.columna })
+        }
+        doc.table(10, 20, data2, headerConfig2);
+
+
+
+
+        doc.save('Java.pdf');
+    }).catch(err => console.log(err))
+}
+
+function descargarPython() {
+    var contenido = document.getElementById(get_vent()).value;
+    axios({
+        method: 'POST',
+        url: 'http://localhost:3000/contenido',
+        data: { 'contenido': contenido }
+    }).then(res => {
+        var doc = new jsPDF();
+        var texto = String(res.data.tPython).split('\n');
+        //console.log(res.data.tPython);
+        doc.setFontSize(22);
+        doc.text(20, 10, 'Traduccion Python');
+        pageHeight = doc.internal.pageSize.height;
+        doc.setFontSize(14);
+        var y = 15;
+        for (let index = 0; index < texto.length; index++) {
+            const element = texto[index];
+            if (y >= pageHeight - 10) {
+                doc.addPage();
+                y = 10;
+            }
+            doc.text(20, y, element);
+            y += 7;
+        }
+        doc.addPage();
+        doc.setFontSize(22);
+        doc.text(20, 10, 'Tokens Python');
+        let header = ["No.", "Token", "Lexema", "Fila", "Columna"];
+        let headerConfig = header.map(key => ({
+            'name': key,
+            'prompt': key,
+            'width': 50,
+            'align': 'center',
+            'padding': 0
+        }));
+        var data = [];
+        for (let index = 0; index < res.data.Python.tokens.length; index++) {
+            const element = res.data.Python.tokens[index];
+            data.push({ 'No.': (index + 1), 'Token': element.token, 'Lexema': element.lexema, 'Fila': element.fila, 'Columna': element.columna })
+        }
+        doc.table(10, 20, data, headerConfig);
+        doc.addPage();
+        doc.setFontSize(22);
+        doc.text(20, 10, 'Errores Python');
+        header = ["No.", "Tipo", "Lexema", "Fila", "Columna"];
+        let headerConfig2 = header.map(key => ({
+            'name': key,
+            'prompt': key,
+            'width': 50,
+            'align': 'center',
+            'padding': 0
+        }));
+        var data2 = [];
+        for (let index = 0; index < res.data.Python.errores.length; index++) {
+            const element = res.data.Python.errores[index];
+            data2.push({ 'No.': (index + 1), 'Tipo': element.tipo, 'Lexema': element.lexema, 'Fila': element.fila, 'Columna': element.columna })
+        }
+        doc.table(10, 20, data2, headerConfig2);
+        doc.save('Python.pdf');
+    }).catch(err => console.log(err))
 }
