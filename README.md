@@ -1,10 +1,46 @@
-# Manual tecnico
-## Servidor Node JS
->#### Para el uso del servidor del lado de la traduccion se uso node js, express y cors para poder levantarlo y hacer las peticioens correspondientes.
->#### Este contiene el modulo **Inpterpreter** y contiene los siguientes archivos:
->    1. **gramatica.jison:** Este contiene las palabras reservadas que aceptara el lenguaje y los retornara en forma de tokens, ademas se establecio la gramatica del lenguaje para aceptar la sintaxis correcta edel mismo.
+# Manual de Usuario
+Para el uso de la aplicacion web solo se necesito la conexion a internet y un navegador.
 
->   2. **gramatica.js:** Este es el archivo resultante de haber compiolado el archivo jison en un formato que sea reconocido y aceptado por el servidor.
+## Inicio de la APP
+Al abrir la aplicacion y los servidores funcionan exitosamente le saldra el inicio de la APP, ademas tiene los siguientes botones:
+    
+    -Agregar
+    -Remover
+    -Analizar
+    -Generar arbol
+    -Examinar
+
+<img src="./Capturas/Inicio.png" alt="drawing" width="600"/>
+
+## Agregar pestaña
+<img src="./Capturas/Agregar pestania.png" alt="drawing" width="600"/>
+
+## Examinar
+<img src="./Capturas/añadir.png" alt="drawing" width="400"/>
+
+## Añadir archivo
+<img src="./Capturas/Textarea llena.png" alt="drawing" width="600"/>
+
+## Analizar
+Al momento de darle al boton la app devolvera un error en las consolas, si realmente encontro un error.
+<img src="./Capturas/analizar.png" alt="drawing" width="600"/>
+
+## Generar Arbol
+<img src="./Capturas/Arbol.png" alt="drawing" width="600"/>
+
+## Reportes
+EL apartado de reportes se podra descargar el archivo con la lista de tokens, errores y traducido al lenguaje deceado.
+<img src="./Capturas/reportes.png" alt="drawing" width="600"/>
+
+
+# Manual Técnico
+## Servidor Node JS
+#### Para el uso del servidor del lado de la traduccion se uso node js, express y cors para poder levantarlo y hacer las peticioens correspondientes.
+#### Este contiene el modulo **Inpterpreter** y contiene los siguientes archivos:
+
+>  1. **gramatica.jison:** Este contiene las palabras reservadas que aceptara el lenguaje y los retornara en forma de tokens, ademas se establecio la gramatica del lenguaje para aceptar la sintaxis correcta edel mismo.
+
+>  2. **gramatica.js:** Este es el archivo resultante de haber compiolado el archivo jison en un formato que sea reconocido y aceptado por el servidor.
 
 >  3. **java.js:** Este archivo contiene los metodos de retornar los tokens, errores, AST y la traduccion del lenguaje.
 

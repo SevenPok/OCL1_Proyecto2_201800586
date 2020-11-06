@@ -561,7 +561,7 @@ var syntax = (function(tk) {
                 break;
             }
             //console.log('Me estoy recuperando con el token: ' + preanalisis.token);
-            errores.push({ 'tipo': 'sintactico', 'lexema': preanalisis.lexema, 'fila': preanalisis.fila, 'columna': preanalisis.columna })
+            //errores.push({ 'tipo': 'sintactico', 'lexema': preanalisis.lexema, 'fila': preanalisis.fila, 'columna': preanalisis.columna })
             i++;
             preanalisis = tk[i];
         }
